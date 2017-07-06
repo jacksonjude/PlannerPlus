@@ -10,16 +10,16 @@ import UIKit
 
 class DetailViewController: UIViewController {
 
-    @IBOutlet weak var detailDescriptionLabel: UILabel!
     @IBOutlet weak var projectNavigationItem: UINavigationItem!
+    @IBOutlet weak var projectInfo: UITextView!
     
 
     func configureView() {
         // Update the user interface for the detail item.
         if let detail = detailItem {
-            if let label = detailDescriptionLabel, detail.createdAt != nil
+            if let textView = projectInfo, detail.projectInfo != nil
             {
-                label.text = detail.createdAt!.description
+                textView.text = detail.projectInfo
             }
             if let navigationItem = projectNavigationItem, detail.name != nil
             {
@@ -33,6 +33,13 @@ class DetailViewController: UIViewController {
         // Do any additional setup after loading the view, typically from a nib.
         configureView()
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        detailItem!.projectInfo = projectInfo.text
+        
+        (UIApplication.shared.delegate as! AppDelegate).syncEngine?.addToLocalChanges(withUUID: detailItem!.uuid!, withChangeType: .update)
+        (UIApplication.shared.delegate as! AppDelegate).saveContext()
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -45,7 +52,5 @@ class DetailViewController: UIViewController {
             configureView()
         }
     }
-
-
 }
 

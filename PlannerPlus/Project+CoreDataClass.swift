@@ -20,7 +20,7 @@ public class Project: NSManagedObject {
         self.projectInfo = remoteRecord.object(forKey: "projectInfo") as? String
         self.subject = remoteRecord.object(forKey: "projectSubject") as? String
         self.projectType = remoteRecord.object(forKey: "projectType") as? String
-        self.uuid = remoteRecord.object(forKey: "recordName") as? String
+        self.uuid = remoteRecord.recordID.recordName
     }
     
     func updateToRemote(_ remoteRecord: CKRecord)

@@ -14,6 +14,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
 
     var window: UIWindow?
     var syncEngine : SyncEngine?
+    
+    var firstLaunch = false
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -25,6 +27,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         let masterNavigationController = splitViewController.viewControllers[0] as! UINavigationController
         let controller = masterNavigationController.topViewController as! MasterViewController
         controller.managedObjectContext = self.persistentContainer.viewContext
+        
+        /*let notificationSettings = UIUserNotificationSettings(types: UIUserNotificationType.alert, categories: nil)
+        application.registerUserNotificationSettings(notificationSettings)
+        application.registerForRemoteNotifications()*/
+        
+        if UserDefaults.standard.object(forKey: "firstLaunch") != nil
+        {
+            firstLaunch = false
+        }
+        else
+        {
+            firstLaunch = true
+            UserDefaults.standard.set(618, forKey: "firstLaunch")
+        }
         
         syncEngine = SyncEngine()
         
@@ -108,8 +124,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
                 let nserror = error as NSError
                 fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
             }
+            
+            if !self.syncEngine!.isReceivingFromServer
+            {
+                self.syncEngine!.syncData()
+            }
         }
     }
-
+    
+    private func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+        self.syncEngine?.fetchChangesFromCloud()
+    }
 }
 

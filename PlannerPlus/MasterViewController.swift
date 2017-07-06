@@ -25,6 +25,8 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             let controllers = split.viewControllers
             detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? DetailViewController
         }
+        
+        self.refreshControl?.addTarget(self, action: #selector(self.handleRefresh), for: UIControlEvents.valueChanged)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -126,7 +128,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     }
 
     func configureCell(_ cell: UITableViewCell, withProject project: Project) {
-        cell.textLabel!.text = project.createdAt!.description
+        cell.textLabel!.text = project.uuid
     }
 
     // MARK: - Fetched results controller
@@ -193,12 +195,20 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
                 tableView.moveRow(at: indexPath!, to: newIndexPath!)
         }
         
-        (UIApplication.shared.delegate as! AppDelegate).syncEngine!.addToLocalChanges(withUUID: (anObject as! Project).uuid!, withChangeType: type)
-        (UIApplication.shared.delegate as! AppDelegate).syncEngine!.syncData()
+        if !(UIApplication.shared.delegate as! AppDelegate).syncEngine!.isReceivingFromServer
+        {
+            (UIApplication.shared.delegate as! AppDelegate).syncEngine!.addToLocalChanges(withUUID: (anObject as! Project).uuid!, withChangeType: type)
+            (UIApplication.shared.delegate as! AppDelegate).syncEngine!.syncData()
+        }
     }
 
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         tableView.endUpdates()
+    }
+    
+    @objc func handleRefresh()
+    {
+        (UIApplication.shared.delegate as! AppDelegate).syncEngine?.fetchChangesFromCloud()
     }
 
     /*

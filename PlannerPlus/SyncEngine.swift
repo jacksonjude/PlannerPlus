@@ -15,6 +15,10 @@ class SyncEngine: NSObject
 {
     var managedObjectContext: NSManagedObjectContext = (UIApplication.shared.delegate! as! AppDelegate).persistentContainer.viewContext
     
+    let projectZone = CKRecordZone(zoneName: "ProjectZone")
+    var currentChangeToken: CKServerChangeToken?
+    var isReceivingFromServer = false
+    
     var queuedChanges = Dictionary<String, NSFetchedResultsChangeType>()
     
     func addToLocalChanges(withUUID uuid: String, withChangeType changeType: NSFetchedResultsChangeType)
@@ -38,7 +42,7 @@ class SyncEngine: NSObject
             case .update:
                 if changeType == .delete
                 {
-                    queuedChanges.updateValue(changeType, forKey: uuid) //Only delete
+                    queuedChanges.updateValue(changeType, forKey: uuid) //Only delete if anything else is in queue
                 }
             case .move:
                 break
@@ -52,6 +56,7 @@ class SyncEngine: NSObject
     
     func syncData()
     {
+        print("Syncing Data to remote...")
         let privateDatabase = CKContainer.default().privateCloudDatabase
         
         for change in queuedChanges
@@ -59,26 +64,27 @@ class SyncEngine: NSObject
             switch change.value
             {
             case .insert:
-                let remoteID = CKRecordID(recordName: change.key, zoneID: CKRecordZone.default().zoneID)
+                let remoteID = CKRecordID(recordName: change.key, zoneID: projectZone.zoneID)
                 
                 let remoteRecord = CKRecord(recordType: "Project", recordID: remoteID)
                 
                 let newPredicate = NSPredicate(format: "uuid == %@", change.key)
-                let newObject = fetchLocalObjects(withPredicate: newPredicate)!.first! as! Project
-                
-                newObject.updateToRemote(remoteRecord)
-                
-                privateDatabase.save(remoteRecord, completionHandler: { (record, error) -> Void in
-                    if (error != nil) {
-                        print("Error: \(String(describing: error))")
-                    }
-                    else
-                    {
-                        self.queuedChanges.removeValue(forKey: change.key)
-                    }
-                })
+                if let newObject = fetchLocalObjects(withPredicate: newPredicate)?.first as? Project
+                {
+                    newObject.updateToRemote(remoteRecord)
+                    
+                    privateDatabase.save(remoteRecord, completionHandler: { (record, error) -> Void in
+                        if (error != nil) {
+                            print("Error: \(String(describing: error))")
+                        }
+                        else
+                        {
+                            self.queuedChanges.removeValue(forKey: change.key)
+                        }
+                    })
+                }
             case .delete:
-                privateDatabase.delete(withRecordID: CKRecordID(recordName: change.key, zoneID: CKRecordZone.default().zoneID), completionHandler: { (recordID, error) -> Void in
+                privateDatabase.delete(withRecordID: CKRecordID(recordName: change.key, zoneID: projectZone.zoneID), completionHandler: { (recordID, error) -> Void in
                     if error != nil
                     {
                         print("Error: \(String(describing: error))")
@@ -89,9 +95,9 @@ class SyncEngine: NSObject
                     }
                 })
             case .update:
-                var updatePredicate = NSPredicate(format: "uuid == %@", change.key)
+                var updatePredicate = NSPredicate(format: "recordName == %@", change.key)
                 let query = CKQuery(recordType: "Project", predicate: updatePredicate)
-                privateDatabase.perform(query, inZoneWith: CKRecordZone.default().zoneID, completionHandler:
+                privateDatabase.perform(query, inZoneWith: projectZone.zoneID, completionHandler:
                     { (results, error) -> Void in
                         if results?.first != nil
                         {
@@ -138,14 +144,105 @@ class SyncEngine: NSObject
         }
         if error == nil
         {
-            NSLog("Fetched Objects To Update From CoreData...")
+            print("Fetched Objects To Update From CoreData...")
         }
         
         return fetchResults
     }
     
+    //NOT WORKING: Use pull to refresh
+    /*func setupRemoteSubscriptions()
+    {
+        let privateDatabase = CKContainer.default().privateCloudDatabase as CKDatabase
+        let predicate = NSPredicate(format: "TRUEPREDICATE")
+        
+        let projectSubscription = CKQuerySubscription(recordType: "Project",
+                                                 predicate: predicate,
+                                                 options: [.firesOnRecordCreation, .firesOnRecordUpdate, .firesOnRecordDeletion])
+        let projectNotificationInfo = CKNotificationInfo()
+        projectNotificationInfo.shouldBadge = false
+        projectSubscription.notificationInfo = projectNotificationInfo
+        privateDatabase.save(projectSubscription, completionHandler: { ( subscription, error) -> Void in
+            if error != nil
+            {
+                print("An error occured in saving subscription: \(String(describing: error))")
+            }
+            else
+            {
+                print("Saved Subscription Succesfully")                
+            }
+        })        
+    }*/
+    
+    func fetchChangesFromCloud()
+    {
+        isReceivingFromServer = true
+        
+        let zoneChangeoptions = CKFetchRecordZoneChangesOptions()
+        zoneChangeoptions.previousServerChangeToken = currentChangeToken
+        
+        let fetchRecordChangesOperation = CKFetchRecordZoneChangesOperation(recordZoneIDs: [projectZone.zoneID], optionsByRecordZoneID: [projectZone.zoneID:zoneChangeoptions])
+        fetchRecordChangesOperation.fetchAllChanges = true
+        
+        fetchRecordChangesOperation.recordChangedBlock = {(record) in
+            let updateLocalObjectPredicate = NSPredicate(format: "uuid == %@", record.recordID.recordName)
+            if let recordToUpdate = self.fetchLocalObjects(withPredicate: updateLocalObjectPredicate)?.first as? Project
+            {
+                recordToUpdate.updateFromRemote(record)
+            }
+            else
+            {
+                let newProject = Project(context: self.managedObjectContext)
+                newProject.updateFromRemote(record)
+            }
+            
+            OperationQueue.main.addOperation {
+                (UIApplication.shared.delegate as! AppDelegate).saveContext()
+            }
+        }
+        
+        fetchRecordChangesOperation.recordWithIDWasDeletedBlock = {(recordID, string) in
+            let deleteLocalObjectPredicate = NSPredicate(format: "uuid == %@", recordID.recordName)
+            let recordToDelete = self.fetchLocalObjects(withPredicate: deleteLocalObjectPredicate)?.first
+            if recordToDelete != nil
+            {
+                OperationQueue.main.addOperation {
+                    self.managedObjectContext.delete(recordToDelete as! NSManagedObject)
+                    (UIApplication.shared.delegate as! AppDelegate).saveContext()
+                }
+            }
+        }
+        
+        fetchRecordChangesOperation.recordZoneFetchCompletionBlock = {(recordZoneID, serverChangeToken, data, finished, error) in
+            if error != nil
+            {
+                print("Error: \(String(describing: error))")
+            }
+            else
+            {
+                self.currentChangeToken = serverChangeToken
+            }
+        }
+        
+        fetchRecordChangesOperation.completionBlock = { () in
+            self.isReceivingFromServer = false
+            
+            OperationQueue.main.addOperation {
+                ((((UIApplication.shared.delegate as! AppDelegate).window!.rootViewController as! UISplitViewController).viewControllers[0] as! UINavigationController).topViewController as! MasterViewController).refreshControl?.endRefreshing()
+            }
+        }
+        
+        let privateDatabase = CKContainer.default().privateCloudDatabase as CKDatabase
+        privateDatabase.add(fetchRecordChangesOperation)
+    }
+    
     override init()
     {
         super.init()
+        
+        if (UIApplication.shared.delegate as! AppDelegate).firstLaunch
+        {
+            //setupRemoteSubscriptions()
+        }
     }
 }
