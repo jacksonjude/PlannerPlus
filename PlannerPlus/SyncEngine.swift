@@ -213,7 +213,7 @@ class SyncEngine: NSObject
             }
         }
         
-        fetchRecordChangesOperation.recordZoneFetchCompletionBlock = {(recordZoneID, serverChangeToken, data, finished, error) in
+        fetchRecordChangesOperation.recordZoneFetchCompletionBlock = {(recordZoneID, serverChangeToken, data, bool, error) in
             if error != nil
             {
                 print("Error: \(String(describing: error))")
@@ -221,6 +221,7 @@ class SyncEngine: NSObject
             else
             {
                 self.currentChangeToken = serverChangeToken
+                UserDefaults.standard.set(NSKeyedArchiver.archivedData(withRootObject: self.currentChangeToken as Any), forKey: "currentChangeToken")
             }
         }
         
@@ -243,6 +244,12 @@ class SyncEngine: NSObject
         if (UIApplication.shared.delegate as! AppDelegate).firstLaunch
         {
             //setupRemoteSubscriptions()
+            UserDefaults.standard.set(false, forKey: "currentChangeToken")
+        }
+        else
+        {
+            let changeToken = NSKeyedUnarchiver.unarchiveObject(with: UserDefaults.standard.object(forKey: "currentChangeToken") as! Data) as! CKServerChangeToken
+            currentChangeToken = changeToken
         }
     }
 }

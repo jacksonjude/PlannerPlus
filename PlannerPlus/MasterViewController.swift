@@ -74,6 +74,52 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         
         //self.performSegue(withIdentifier: "showDetail", sender: self)
     }
+    
+    @objc func addProjectTypeSubject()
+    {
+        let typeSubjectAlert = UIAlertController(title: "New Type or Subject", message: "Create a new subject (ie: Biology) or project type (ie: Homework, Project)", preferredStyle: .alert)
+        typeSubjectAlert.addTextField { (textFeild) in
+            textFeild.placeholder = "Name"
+        }
+        typeSubjectAlert.addAction(UIAlertAction(title: "Type", style: .default, handler: { (alert) in
+            let typeName = typeSubjectAlert.textFields![0].text
+            
+            if typeName != nil
+            {
+                if var projectTypeArray = UserDefaults.standard.object(forKey: "projectTypes") as? Array<String>
+                {
+                    projectTypeArray.append(typeName!)
+                }
+                else
+                {
+                    let projectTypeArray: Array<String> = [typeName!]
+                    UserDefaults.standard.set(projectTypeArray, forKey: "projectTypes")
+                }
+            }
+        }))
+        
+        typeSubjectAlert.addAction(UIAlertAction(title: "Subject", style: .default, handler: { (alert) in
+            let subjectName = typeSubjectAlert.textFields![0].text
+            
+            if subjectName != nil
+            {
+                if var projectSubjectArray = UserDefaults.standard.object(forKey: "projectSubjects") as? Array<String>
+                {
+                    projectSubjectArray.append(subjectName!)
+                }
+                else
+                {
+                    let projectSubjectArray: Array<String> = [subjectName!]
+                    UserDefaults.standard.set(projectSubjectArray, forKey: "projectSubjects")
+                }
+            }
+        }))
+        
+        typeSubjectAlert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { (alert) in
+            
+        }))
+    }
+    
     // MARK: - Segues
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -109,6 +155,21 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         // Return false if you do not want the specified item to be editable.
         return true
+    }
+    
+    override func setEditing(_ editing: Bool, animated: Bool) {
+        super.setEditing(editing, animated: animated)
+        
+        if editing
+        {
+            let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addProjectTypeSubject))
+            navigationItem.rightBarButtonItem = addButton
+        }
+        else
+        {
+            let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(insertNewObject(_:)))
+            navigationItem.rightBarButtonItem = addButton
+        }
     }
 
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {

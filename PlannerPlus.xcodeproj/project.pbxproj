@@ -21,7 +21,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		7A2745321F0D88BB005A15C6 /* SyncEngine?.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SyncEngine?.swift"; sourceTree = "<group>"; };
 		7A34348D1F0C3E300029857A /* PlannerPlus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PlannerPlus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A3434901F0C3E300029857A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7A3434931F0C3E300029857A /* PlannerPlus.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PlannerPlus.xcdatamodel; sourceTree = "<group>"; };
@@ -79,7 +78,6 @@
 				7A34349C1F0C3E300029857A /* Assets.xcassets */,
 				7A34349E1F0C3E300029857A /* LaunchScreen.storyboard */,
 				7A3434A11F0C3E300029857A /* Info.plist */,
-				7A2745321F0D88BB005A15C6 /* SyncEngine?.swift */,
 				7AB8B1BA1F0D8B5B0070257E /* SyncEngine.swift */,
 			);
 			path = PlannerPlus;
@@ -331,7 +329,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 4.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -348,7 +346,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 4.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
