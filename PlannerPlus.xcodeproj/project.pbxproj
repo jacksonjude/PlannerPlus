@@ -14,6 +14,8 @@
 		7A34349B1F0C3E300029857A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7A3434991F0C3E300029857A /* Main.storyboard */; };
 		7A34349D1F0C3E300029857A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7A34349C1F0C3E300029857A /* Assets.xcassets */; };
 		7A3434A01F0C3E300029857A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7A34349E1F0C3E300029857A /* LaunchScreen.storyboard */; };
+		7A54E3221F0F4956003C67AA /* ProjectTypeTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A54E3211F0F4956003C67AA /* ProjectTypeTableViewController.swift */; };
+		7A54E3241F0F5BDF003C67AA /* ProjectPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A54E3231F0F5BDF003C67AA /* ProjectPickerViewController.swift */; };
 		7A72735F1F0DAA020046B0B4 /* Project+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A72735E1F0DAA020046B0B4 /* Project+CoreDataProperties.swift */; };
 		7A8172301F0DA1690013A37F /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A81722F1F0DA1690013A37F /* CloudKit.framework */; };
 		7A81723B1F0DA5460013A37F /* Project+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A8172391F0DA5460013A37F /* Project+CoreDataClass.swift */; };
@@ -30,6 +32,8 @@
 		7A34349C1F0C3E300029857A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7A34349F1F0C3E300029857A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7A3434A11F0C3E300029857A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7A54E3211F0F4956003C67AA /* ProjectTypeTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectTypeTableViewController.swift; sourceTree = "<group>"; };
+		7A54E3231F0F5BDF003C67AA /* ProjectPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectPickerViewController.swift; sourceTree = "<group>"; };
 		7A72735E1F0DAA020046B0B4 /* Project+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Project+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		7A81722B1F0D9D040013A37F /* PlannerPlus.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PlannerPlus.entitlements; sourceTree = "<group>"; };
 		7A81722F1F0DA1690013A37F /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
@@ -74,6 +78,8 @@
 				7A3434901F0C3E300029857A /* AppDelegate.swift */,
 				7A3434951F0C3E300029857A /* MasterViewController.swift */,
 				7A3434971F0C3E300029857A /* DetailViewController.swift */,
+				7A54E3231F0F5BDF003C67AA /* ProjectPickerViewController.swift */,
+				7A54E3211F0F4956003C67AA /* ProjectTypeTableViewController.swift */,
 				7A3434991F0C3E300029857A /* Main.storyboard */,
 				7A34349C1F0C3E300029857A /* Assets.xcassets */,
 				7A34349E1F0C3E300029857A /* LaunchScreen.storyboard */,
@@ -183,11 +189,13 @@
 			files = (
 				7A3434941F0C3E300029857A /* PlannerPlus.xcdatamodeld in Sources */,
 				7A3434911F0C3E300029857A /* AppDelegate.swift in Sources */,
+				7A54E3241F0F5BDF003C67AA /* ProjectPickerViewController.swift in Sources */,
 				7A72735F1F0DAA020046B0B4 /* Project+CoreDataProperties.swift in Sources */,
 				7AB8B1BB1F0D8B5B0070257E /* SyncEngine.swift in Sources */,
 				7A81723B1F0DA5460013A37F /* Project+CoreDataClass.swift in Sources */,
 				7A3434961F0C3E300029857A /* MasterViewController.swift in Sources */,
 				7A3434981F0C3E300029857A /* DetailViewController.swift in Sources */,
+				7A54E3221F0F4956003C67AA /* ProjectTypeTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -75,51 +75,6 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         //self.performSegue(withIdentifier: "showDetail", sender: self)
     }
     
-    @objc func addProjectTypeSubject()
-    {
-        let typeSubjectAlert = UIAlertController(title: "New Type or Subject", message: "Create a new subject (ie: Biology) or project type (ie: Homework, Project)", preferredStyle: .alert)
-        typeSubjectAlert.addTextField { (textFeild) in
-            textFeild.placeholder = "Name"
-        }
-        typeSubjectAlert.addAction(UIAlertAction(title: "Type", style: .default, handler: { (alert) in
-            let typeName = typeSubjectAlert.textFields![0].text
-            
-            if typeName != nil
-            {
-                if var projectTypeArray = UserDefaults.standard.object(forKey: "projectTypes") as? Array<String>
-                {
-                    projectTypeArray.append(typeName!)
-                }
-                else
-                {
-                    let projectTypeArray: Array<String> = [typeName!]
-                    UserDefaults.standard.set(projectTypeArray, forKey: "projectTypes")
-                }
-            }
-        }))
-        
-        typeSubjectAlert.addAction(UIAlertAction(title: "Subject", style: .default, handler: { (alert) in
-            let subjectName = typeSubjectAlert.textFields![0].text
-            
-            if subjectName != nil
-            {
-                if var projectSubjectArray = UserDefaults.standard.object(forKey: "projectSubjects") as? Array<String>
-                {
-                    projectSubjectArray.append(subjectName!)
-                }
-                else
-                {
-                    let projectSubjectArray: Array<String> = [subjectName!]
-                    UserDefaults.standard.set(projectSubjectArray, forKey: "projectSubjects")
-                }
-            }
-        }))
-        
-        typeSubjectAlert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { (alert) in
-            
-        }))
-    }
-    
     // MARK: - Segues
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -146,7 +101,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ProjectCell", for: indexPath)
         let project = fetchedResultsController.object(at: indexPath)
         configureCell(cell, withProject: project)
         return cell
@@ -162,14 +117,19 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         
         if editing
         {
-            let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addProjectTypeSubject))
-            navigationItem.rightBarButtonItem = addButton
+            let organizeButton = UIBarButtonItem(barButtonSystemItem: .organize, target: self, action: #selector(presentProjectLabelTableView))
+            navigationItem.rightBarButtonItem = organizeButton
         }
         else
         {
             let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(insertNewObject(_:)))
             navigationItem.rightBarButtonItem = addButton
         }
+    }
+    
+    @objc func presentProjectLabelTableView()
+    {
+        self.performSegue(withIdentifier: "editProjectTypes", sender: self)
     }
 
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
@@ -202,7 +162,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         let fetchRequest: NSFetchRequest<Project> = Project.fetchRequest()
         
         // Set the batch size to a suitable number.
-        fetchRequest.fetchBatchSize = 20
+        fetchRequest.fetchBatchSize = 40
         
         // Edit the sort key as appropriate.
         let sortDescriptor = NSSortDescriptor(key: "createdAt", ascending: false)

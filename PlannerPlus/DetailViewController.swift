@@ -30,6 +30,8 @@ class DetailViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        projectNavigationItem.rightBarButtonItem = editButtonItem
         // Do any additional setup after loading the view, typically from a nib.
         configureView()
     }
@@ -39,6 +41,21 @@ class DetailViewController: UIViewController {
         
         (UIApplication.shared.delegate as! AppDelegate).syncEngine?.addToLocalChanges(withUUID: detailItem!.uuid!, withChangeType: .update)
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
+    }
+    
+    override func setEditing(_ editing: Bool, animated: Bool) {
+        super.setEditing(editing, animated: animated)
+        
+        if editing
+        {
+            projectInfo.isEditable = true
+            NotificationCenter.default.post(name: Notification.Name(rawValue: "toggleEditing"), object: nil)
+        }
+        else
+        {
+            projectInfo.isEditable = false
+            NotificationCenter.default.post(name: Notification.Name(rawValue: "toggleEditing"), object: nil)
+        }
     }
 
     override func didReceiveMemoryWarning() {
