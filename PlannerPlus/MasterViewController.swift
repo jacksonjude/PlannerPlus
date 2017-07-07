@@ -14,6 +14,8 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     var detailViewController: DetailViewController? = nil
     var managedObjectContext: NSManagedObjectContext? = nil
     
+    var waitingToFetchFromCloud = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -27,6 +29,8 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         }
         
         self.refreshControl?.addTarget(self, action: #selector(self.handleRefresh), for: UIControlEvents.valueChanged)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(finishedFetchingFromCloud), name: Notification.Name(rawValue: "finishedFetchingFromCloud"), object: nil)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -47,6 +51,10 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
         }
         nameAlert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (alert) in
             let textField = nameAlert.textFields![0]
+            if textField.text == "" || textField.text == nil
+            {
+                textField.text = "Project"
+            }
             
             let context = self.fetchedResultsController.managedObjectContext
             let newProject = Project(context: context)
@@ -55,6 +63,8 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
             newProject.createdAt = Date()
             newProject.uuid = UUID().uuidString
             newProject.name = textField.text
+            newProject.projectSubject = "N/A"
+            newProject.projectType = "N/A"
             
             do {
                 try context.save()
@@ -110,6 +120,33 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         // Return false if you do not want the specified item to be editable.
         return true
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        waitingToFetchFromCloud = true
+        (UIApplication.shared.delegate as! AppDelegate).syncEngine?.fetchChangesFromCloud()
+    }
+    
+    @objc func finishedFetchingFromCloud()
+    {
+        if waitingToFetchFromCloud
+        {
+            presentDetailView()
+        }
+        
+        if refreshControl != nil
+        {
+            if refreshControl!.isRefreshing
+            {
+                refreshControl!.endRefreshing()
+            }
+        }
+    }
+    
+    func presentDetailView()
+    {
+        waitingToFetchFromCloud = false
+        self.performSegue(withIdentifier: "showDetail", sender: self)
     }
     
     override func setEditing(_ editing: Bool, animated: Bool) {
@@ -229,9 +266,9 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     
     @objc func handleRefresh()
     {
-        (UIApplication.shared.delegate as! AppDelegate).syncEngine?.fetchChangesFromCloud()
+        (UIApplication.shared.delegate as! AppDelegate).syncEngine!.fetchChangesFromCloud()
     }
-
+    
     /*
      // Implementing the above methods to update the table view in response to individual changes may have performance implications if a large number of changes are made simultaneously. If this proves to be an issue, you can instead just implement controllerDidChangeContent: which notifies the delegate that all section and object changes have been processed.
      

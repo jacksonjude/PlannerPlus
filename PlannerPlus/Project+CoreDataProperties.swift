@@ -21,7 +21,7 @@ extension Project {
     @NSManaged public var dueDate: Date?
     @NSManaged public var name: String?
     @NSManaged public var projectInfo: String?
-    @NSManaged public var subject: String?
+    @NSManaged public var projectSubject: String?
     @NSManaged public var projectType: String?
     @NSManaged public var uuid: String?
 

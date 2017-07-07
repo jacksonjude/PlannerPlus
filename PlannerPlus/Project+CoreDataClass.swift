@@ -18,7 +18,7 @@ public class Project: NSManagedObject {
         self.name = remoteRecord.object(forKey: "projectName") as? String
         self.dueDate = remoteRecord.object(forKey: "projectDueDate") as? Date
         self.projectInfo = remoteRecord.object(forKey: "projectInfo") as? String
-        self.subject = remoteRecord.object(forKey: "projectSubject") as? String
+        self.projectSubject = remoteRecord.object(forKey: "projectSubject") as? String
         self.projectType = remoteRecord.object(forKey: "projectType") as? String
         self.uuid = remoteRecord.recordID.recordName
     }
@@ -28,7 +28,7 @@ public class Project: NSManagedObject {
         remoteRecord.setObject(self.name as CKRecordValue?, forKey: "projectName")
         remoteRecord.setObject(self.dueDate as CKRecordValue?, forKey: "projectDueDate")
         remoteRecord.setObject(self.projectInfo as CKRecordValue?, forKey: "projectInfo")
-        remoteRecord.setObject(self.subject as CKRecordValue?, forKey: "projectSubject")
+        remoteRecord.setObject(self.projectSubject as CKRecordValue?, forKey: "projectSubject")
         remoteRecord.setObject(self.projectType as CKRecordValue?, forKey: "projectType")
         remoteRecord.setObject(self.uuid as CKRecordValue?, forKey: "recordName")
     }

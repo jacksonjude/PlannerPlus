@@ -9,9 +9,9 @@
 import Foundation
 import UIKit
 
-class ProjectPickerViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource
+class LabelPickerViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource
 {
-    @IBOutlet weak var projectSelectionPicker: UIPickerView!
+    @IBOutlet weak var projectLabelPicker: UIPickerView!
     
     var projectTypeArray = Array<String>()
     var projectSubjectArray = Array<String>()
@@ -24,25 +24,43 @@ class ProjectPickerViewController: UIViewController, UIPickerViewDelegate, UIPic
         if let projectTypeArray = UserDefaults.standard.object(forKey: "projectTypes") as? Array<String>
         {
             self.projectTypeArray = projectTypeArray
+            self.projectTypeArray.append("N/A")
+        }
+        else
+        {
+            self.projectTypeArray.append("N/A")
         }
         
         if let projectSubjectArray = UserDefaults.standard.object(forKey: "projectSubjects") as? Array<String>
         {
             self.projectSubjectArray = projectSubjectArray
+            self.projectSubjectArray.append("N/A")
+        }
+        else
+        {
+            self.projectSubjectArray.append("N/A")
         }
         
-        projectSelectionPicker.reloadAllComponents()
+        projectLabelPicker.reloadAllComponents()
         
         NotificationCenter.default.addObserver(self, selector: #selector(toggleEditing), name: Notification.Name(rawValue: "toggleEditing"), object: nil)
     }
     
     @objc func toggleEditing()
     {
-        projectSelectionPicker.isHidden = !projectSelectionPicker.isHidden
+        projectLabelPicker.isHidden = !projectLabelPicker.isHidden
         
-        if !projectSelectionPicker.isHidden
+        if !projectLabelPicker.isHidden
         {
-            projectSelectionPicker.becomeFirstResponder()
+            projectLabelPicker.becomeFirstResponder()
+        }
+        else
+        {
+            let projectType = projectTypeArray[projectLabelPicker.selectedRow(inComponent: 0)]
+            NotificationCenter.default.post(name: Notification.Name(rawValue: "selectedProjectType"), object: projectType)
+            
+            let projectSubject = projectSubjectArray[projectLabelPicker.selectedRow(inComponent: 1)]
+            NotificationCenter.default.post(name: Notification.Name(rawValue: "selectedProjectSubject"), object: projectSubject)
         }
     }
     

@@ -12,6 +12,8 @@ class DetailViewController: UIViewController {
 
     @IBOutlet weak var projectNavigationItem: UINavigationItem!
     @IBOutlet weak var projectInfo: UITextView!
+    @IBOutlet weak var projectSubjectLabel: UILabel!
+    @IBOutlet weak var projectTypeLabel: UILabel!
     
 
     func configureView() {
@@ -25,6 +27,14 @@ class DetailViewController: UIViewController {
             {
                 navigationItem.title = detail.name
             }
+            if let subjectLabel = projectSubjectLabel, detail.projectSubject != nil
+            {
+                subjectLabel.text = detail.projectSubject
+            }
+            if let typeLabel = projectTypeLabel, detail.projectType != nil
+            {
+                typeLabel.text = detail.projectType
+            }
         }
     }
 
@@ -34,6 +44,9 @@ class DetailViewController: UIViewController {
         projectNavigationItem.rightBarButtonItem = editButtonItem
         // Do any additional setup after loading the view, typically from a nib.
         configureView()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(setProjectType), name: Notification.Name(rawValue: "selectedProjectType"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(setProjectSubject), name: Notification.Name(rawValue: "selectedProjectSubject"), object: nil)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -56,6 +69,22 @@ class DetailViewController: UIViewController {
             projectInfo.isEditable = false
             NotificationCenter.default.post(name: Notification.Name(rawValue: "toggleEditing"), object: nil)
         }
+    }
+    
+    @objc func setProjectType(notification: Notification)
+    {
+        let projectType = notification.object as! String
+        detailItem!.projectType = projectType
+        
+        configureView()
+    }
+    
+    @objc func setProjectSubject(notification: Notification)
+    {
+        let projectSubject = notification.object as! String
+        detailItem!.projectSubject = projectSubject
+        
+        configureView()
     }
 
     override func didReceiveMemoryWarning() {

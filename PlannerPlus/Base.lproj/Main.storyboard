@@ -49,21 +49,21 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3iX-VV-gnQ">
-                                <rect key="frame" x="222" y="72" width="85" height="40"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="N/A" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3iX-VV-gnQ">
+                                <rect key="frame" x="202" y="72" width="105" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="9xK-Hx-MgZ"/>
-                                    <constraint firstAttribute="width" constant="85" id="Wzy-A3-75p"/>
+                                    <constraint firstAttribute="width" constant="105" id="Wzy-A3-75p"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mfr-w7-sNG">
-                                <rect key="frame" x="67" y="72" width="85" height="40"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="N/A" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mfr-w7-sNG">
+                                <rect key="frame" x="67" y="72" width="105" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="7ve-BU-C1T"/>
-                                    <constraint firstAttribute="width" constant="85" id="PRi-gN-Aab"/>
+                                    <constraint firstAttribute="width" constant="105" id="PRi-gN-Aab"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
@@ -99,6 +99,8 @@
                     <connections>
                         <outlet property="projectInfo" destination="eJv-Qb-PF1" id="ZSd-3i-nLf"/>
                         <outlet property="projectNavigationItem" destination="mOI-FS-AaM" id="OzW-6J-8kk"/>
+                        <outlet property="projectSubjectLabel" destination="3iX-VV-gnQ" id="OfQ-LU-qXq"/>
+                        <outlet property="projectTypeLabel" destination="Mfr-w7-sNG" id="9YZ-8a-fOf"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FJe-Yq-33r" sceneMemberID="firstResponder"/>
@@ -145,9 +147,6 @@
                                     </subviews>
                                 </tableViewCellContentView>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <connections>
-                                    <segue destination="vC3-pB-5Vb" kind="showDetail" identifier="showDetail" id="6S0-TO-JiA"/>
-                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <sections/>
@@ -163,6 +162,7 @@
                     </refreshControl>
                     <connections>
                         <segue destination="h8K-dV-MFZ" kind="showDetail" identifier="editProjectTypes" id="Vey-T3-0iD"/>
+                        <segue destination="vC3-pB-5Vb" kind="showDetail" identifier="showDetail" id="P8O-bZ-8If"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Rux-fX-hf1" sceneMemberID="firstResponder"/>
@@ -240,10 +240,10 @@
             </objects>
             <point key="canvasLocation" x="-45" y="129"/>
         </scene>
-        <!--Project Picker View Controller-->
+        <!--Label Picker View Controller-->
         <scene sceneID="T0H-wx-NFI">
             <objects>
-                <viewController id="M7A-V6-F6H" customClass="ProjectPickerViewController" customModule="PlannerPlus" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="M7A-V6-F6H" customClass="LabelPickerViewController" customModule="PlannerPlus" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="jdZ-2y-EfX"/>
                         <viewControllerLayoutGuide type="bottom" id="Pzi-sQ-Q4D"/>
@@ -270,7 +270,7 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="projectSelectionPicker" destination="BgM-KY-Jwc" id="S01-mk-VpP"/>
+                        <outlet property="projectLabelPicker" destination="BgM-KY-Jwc" id="J2o-LM-keF"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UUZ-Lt-f0q" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -279,6 +279,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="Tll-UG-LXB"/>
+        <segue reference="P8O-bZ-8If"/>
     </inferredMetricsTieBreakers>
 </document>

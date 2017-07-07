@@ -229,7 +229,7 @@ class SyncEngine: NSObject
             self.isReceivingFromServer = false
             
             OperationQueue.main.addOperation {
-                ((((UIApplication.shared.delegate as! AppDelegate).window!.rootViewController as! UISplitViewController).viewControllers[0] as! UINavigationController).topViewController as! MasterViewController).refreshControl?.endRefreshing()
+                NotificationCenter.default.post(name: Notification.Name(rawValue: "finishedFetchingFromCloud"), object: nil)
             }
         }
         
