@@ -58,6 +58,8 @@ class LabelPickerViewController: UIViewController, UIPickerViewDelegate, UIPicke
             projectLabelPicker.isUserInteractionEnabled = true
             
             projectLabelPicker.becomeFirstResponder()
+            
+            //projectLabelPicker.selectRow(projectLabelPicker[], inComponent: <#T##Int#>, animated: <#T##Bool#>)
         }
         else
         {

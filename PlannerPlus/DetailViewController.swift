@@ -64,8 +64,6 @@ class DetailViewController: UIViewController {
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        detailItem!.projectInfo = projectInfo.text
-        
         (UIApplication.shared.delegate as! AppDelegate).syncEngine?.addToLocalChanges(withUUID: detailItem!.uuid!, withChangeType: .update)
         (UIApplication.shared.delegate as! AppDelegate).saveContext()
     }
@@ -84,6 +82,7 @@ class DetailViewController: UIViewController {
         else
         {
             projectInfo.isEditable = false
+            detailItem!.projectInfo = projectInfo.text
             NotificationCenter.default.post(name: Notification.Name(rawValue: "togglePicker"), object: kNone)
             
             pickerButton.isHidden = true
