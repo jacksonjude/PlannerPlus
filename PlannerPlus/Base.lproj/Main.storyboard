@@ -69,17 +69,6 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gQz-hA-Pog">
-                                <rect key="frame" x="16" y="483" width="343" height="184"/>
-                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.0" colorSpace="custom" customColorSpace="displayP3"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="184" id="mor-ll-TrW"/>
-                                    <constraint firstAttribute="width" constant="343" id="u5f-95-2Ar"/>
-                                </constraints>
-                                <connections>
-                                    <segue destination="M7A-V6-F6H" kind="embed" id="aEJ-dv-xQE"/>
-                                </connections>
-                            </containerView>
                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Loj-HY-7iu">
                                 <rect key="frame" x="16" y="483" width="343" height="184"/>
                                 <color key="backgroundColor" white="1" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -113,21 +102,32 @@
                                     <action selector="togglePickerToShow" destination="JEX-9P-axG" eventType="touchUpInside" id="rQ3-80-Zc7"/>
                                 </connections>
                             </button>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kdr-cP-1nt">
+                                <rect key="frame" x="16" y="483" width="343" height="184"/>
+                                <color key="backgroundColor" white="1" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="343" id="KBz-2Y-mf2"/>
+                                    <constraint firstAttribute="height" constant="184" id="YtS-US-eU4"/>
+                                </constraints>
+                                <connections>
+                                    <segue destination="vFR-ry-iCm" kind="embed" id="sDn-Cw-i8R"/>
+                                </connections>
+                            </containerView>
                         </subviews>
                         <color key="backgroundColor" red="0.81038948485088835" green="0.80647455980329952" blue="0.81430440989847719" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <constraints>
+                            <constraint firstItem="kdr-cP-1nt" firstAttribute="bottom" secondItem="svH-Pt-448" secondAttribute="bottomMargin" id="6GE-CM-58J"/>
                             <constraint firstItem="Mfr-w7-sNG" firstAttribute="leading" secondItem="eJv-Qb-PF1" secondAttribute="leadingMargin" constant="-8" id="7Yj-YF-op4"/>
                             <constraint firstItem="2W7-SP-JJy" firstAttribute="centerX" secondItem="svH-Pt-448" secondAttribute="centerX" id="85O-f6-h25"/>
                             <constraint firstItem="3iX-VV-gnQ" firstAttribute="top" secondItem="SYR-Wa-9uf" secondAttribute="bottom" constant="8" id="KSI-vI-kgl"/>
                             <constraint firstItem="eJv-Qb-PF1" firstAttribute="top" secondItem="SYR-Wa-9uf" secondAttribute="bottom" constant="96" id="VjF-Kk-cNY"/>
                             <constraint firstItem="eJv-Qb-PF1" firstAttribute="centerX" secondItem="svH-Pt-448" secondAttribute="centerX" id="VkQ-6C-Mty"/>
+                            <constraint firstItem="Loj-HY-7iu" firstAttribute="top" secondItem="2W7-SP-JJy" secondAttribute="bottom" constant="8" id="b0E-eF-BYL"/>
                             <constraint firstItem="GOF-yf-S8a" firstAttribute="top" secondItem="3iX-VV-gnQ" secondAttribute="bottom" id="bhW-ds-3q0"/>
-                            <constraint firstItem="gQz-hA-Pog" firstAttribute="centerX" secondItem="svH-Pt-448" secondAttribute="centerX" id="ebl-q7-rPW"/>
                             <constraint firstItem="Mfr-w7-sNG" firstAttribute="top" secondItem="SYR-Wa-9uf" secondAttribute="bottom" constant="8" id="lR7-OY-hX6"/>
-                            <constraint firstItem="gQz-hA-Pog" firstAttribute="top" secondItem="2W7-SP-JJy" secondAttribute="bottom" constant="8" id="pL9-bx-AU4"/>
                             <constraint firstItem="Loj-HY-7iu" firstAttribute="bottom" secondItem="svH-Pt-448" secondAttribute="bottomMargin" id="ql0-wj-TNU"/>
                             <constraint firstItem="GOF-yf-S8a" firstAttribute="centerX" secondItem="svH-Pt-448" secondAttribute="centerX" id="rUF-8V-apa"/>
-                            <constraint firstItem="GAO-Cl-Wes" firstAttribute="top" secondItem="gQz-hA-Pog" secondAttribute="bottom" id="xV3-T2-0tf"/>
+                            <constraint firstItem="kdr-cP-1nt" firstAttribute="centerX" secondItem="svH-Pt-448" secondAttribute="centerX" id="uKX-dv-oby"/>
                             <constraint firstItem="Loj-HY-7iu" firstAttribute="centerX" secondItem="svH-Pt-448" secondAttribute="centerX" id="yjf-Qy-eou"/>
                             <constraint firstItem="eJv-Qb-PF1" firstAttribute="trailingMargin" secondItem="3iX-VV-gnQ" secondAttribute="trailing" constant="-8" id="yxi-1H-Nvo"/>
                         </constraints>
@@ -281,43 +281,6 @@
             </objects>
             <point key="canvasLocation" x="-45" y="129"/>
         </scene>
-        <!--Label Picker View Controller-->
-        <scene sceneID="T0H-wx-NFI">
-            <objects>
-                <viewController id="M7A-V6-F6H" customClass="LabelPickerViewController" customModule="PlannerPlus" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="jdZ-2y-EfX"/>
-                        <viewControllerLayoutGuide type="bottom" id="Pzi-sQ-Q4D"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="Tn8-n2-O9Q">
-                        <rect key="frame" x="0.0" y="0.0" width="343" height="184"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <pickerView hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BgM-KY-Jwc">
-                                <rect key="frame" x="0.0" y="0.0" width="343" height="184"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <connections>
-                                    <outlet property="dataSource" destination="M7A-V6-F6H" id="daz-T7-HbO"/>
-                                    <outlet property="delegate" destination="M7A-V6-F6H" id="hmL-WP-BmW"/>
-                                </connections>
-                            </pickerView>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="0.0" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstAttribute="trailing" secondItem="BgM-KY-Jwc" secondAttribute="trailing" id="Mcw-Zl-3SR"/>
-                            <constraint firstItem="BgM-KY-Jwc" firstAttribute="top" secondItem="Tn8-n2-O9Q" secondAttribute="top" id="hga-U2-cy5"/>
-                            <constraint firstItem="BgM-KY-Jwc" firstAttribute="leading" secondItem="Tn8-n2-O9Q" secondAttribute="leading" id="vRW-qI-iOs"/>
-                            <constraint firstAttribute="bottom" secondItem="BgM-KY-Jwc" secondAttribute="bottom" id="z5d-yU-E64"/>
-                        </constraints>
-                    </view>
-                    <connections>
-                        <outlet property="projectLabelPicker" destination="BgM-KY-Jwc" id="J2o-LM-keF"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="UUZ-Lt-f0q" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="668" y="627"/>
-        </scene>
         <!--Date Picker View Controller-->
         <scene sceneID="Pxs-eO-3GC">
             <objects>
@@ -351,7 +314,40 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Nup-L0-U3a" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1287" y="627"/>
+            <point key="canvasLocation" x="1115" y="796"/>
+        </scene>
+        <!--Label Picker View Controller-->
+        <scene sceneID="h1H-MC-Lke">
+            <objects>
+                <viewController id="vFR-ry-iCm" customClass="LabelPickerViewController" customModule="PlannerPlus" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="ysv-4p-w5A">
+                        <rect key="frame" x="0.0" y="0.0" width="343" height="184"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <pickerView hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HJa-DL-gjC">
+                                <rect key="frame" x="0.0" y="0.0" width="343" height="184"/>
+                                <color key="backgroundColor" white="1" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="vFR-ry-iCm" id="hm1-Md-6bG"/>
+                                    <outlet property="delegate" destination="vFR-ry-iCm" id="zHa-gV-B1r"/>
+                                </connections>
+                            </pickerView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="HJa-DL-gjC" secondAttribute="bottom" id="AB1-IR-DlC"/>
+                            <constraint firstAttribute="trailing" secondItem="HJa-DL-gjC" secondAttribute="trailing" id="C1H-Y0-esM"/>
+                            <constraint firstItem="HJa-DL-gjC" firstAttribute="leading" secondItem="ysv-4p-w5A" secondAttribute="leading" id="krQ-7d-GzO"/>
+                            <constraint firstItem="HJa-DL-gjC" firstAttribute="top" secondItem="ysv-4p-w5A" secondAttribute="top" id="qWA-C7-bN8"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="projectLabelPicker" destination="HJa-DL-gjC" id="Rk2-0o-Wk0"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="MIt-1M-So5" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="692" y="796"/>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
