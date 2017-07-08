@@ -14,7 +14,14 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var projectInfo: UITextView!
     @IBOutlet weak var projectSubjectLabel: UILabel!
     @IBOutlet weak var projectTypeLabel: UILabel!
+    @IBOutlet weak var pickerButton: UIButton!
+    @IBOutlet weak var projectDueDateLabel: UILabel!
     
+    let kNone = 0
+    let kLabels = 1
+    let kDueDate = 2
+    
+    var pickerToShow = 1
 
     func configureView() {
         // Update the user interface for the detail item.
@@ -35,6 +42,12 @@ class DetailViewController: UIViewController {
             {
                 typeLabel.text = detail.projectType
             }
+            if let dueDateLabel = projectDueDateLabel, detail.dueDate != nil
+            {
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "MM-dd hh:mm"
+                dueDateLabel.text = dateFormatter.string(from: detail.dueDate!)
+            }
         }
     }
 
@@ -47,6 +60,7 @@ class DetailViewController: UIViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(setProjectType), name: Notification.Name(rawValue: "selectedProjectType"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(setProjectSubject), name: Notification.Name(rawValue: "selectedProjectSubject"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(setProjectDueDate), name: Notification.Name(rawValue: "selectedDueDate"), object: nil)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -62,12 +76,18 @@ class DetailViewController: UIViewController {
         if editing
         {
             projectInfo.isEditable = true
-            NotificationCenter.default.post(name: Notification.Name(rawValue: "toggleEditing"), object: nil)
+            NotificationCenter.default.post(name: Notification.Name(rawValue: "togglePicker"), object: pickerToShow)
+            
+            pickerButton.isHidden = false
+            pickerButton.isEnabled = true
         }
         else
         {
             projectInfo.isEditable = false
-            NotificationCenter.default.post(name: Notification.Name(rawValue: "toggleEditing"), object: nil)
+            NotificationCenter.default.post(name: Notification.Name(rawValue: "togglePicker"), object: kNone)
+            
+            pickerButton.isHidden = true
+            pickerButton.isEnabled = false
         }
     }
     
@@ -85,6 +105,30 @@ class DetailViewController: UIViewController {
         detailItem!.projectSubject = projectSubject
         
         configureView()
+    }
+    
+    @objc func setProjectDueDate(notification: Notification)
+    {
+        let projectDueDate = notification.object as! Date
+        detailItem!.dueDate = projectDueDate
+        
+        configureView()
+    }
+    
+    @IBAction func togglePickerToShow()
+    {
+        if pickerToShow == kLabels
+        {
+            pickerToShow = kDueDate
+            pickerButton.setTitle("Due Date", for: .normal)
+            NotificationCenter.default.post(name: Notification.Name(rawValue: "togglePicker"), object: pickerToShow)
+        }
+        else if pickerToShow == kDueDate
+        {
+            pickerToShow = kLabels
+            pickerButton.setTitle("Labels", for: .normal)
+            NotificationCenter.default.post(name: Notification.Name(rawValue: "togglePicker"), object: pickerToShow)
+        }
     }
 
     override func didReceiveMemoryWarning() {

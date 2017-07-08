@@ -18,6 +18,10 @@ class LabelPickerViewController: UIViewController, UIPickerViewDelegate, UIPicke
     
     var pickerIsShown = false
     
+    let kNone = 0
+    let kLabels = 1
+    let kDueDate = 2
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -43,19 +47,23 @@ class LabelPickerViewController: UIViewController, UIPickerViewDelegate, UIPicke
         
         projectLabelPicker.reloadAllComponents()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(toggleEditing), name: Notification.Name(rawValue: "toggleEditing"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(togglePicker), name: Notification.Name(rawValue: "togglePicker"), object: nil)
     }
     
-    @objc func toggleEditing()
+    @objc func togglePicker(notification: Notification)
     {
-        projectLabelPicker.isHidden = !projectLabelPicker.isHidden
-        
-        if !projectLabelPicker.isHidden
+        if (notification.object as? Int) == kLabels
         {
+            projectLabelPicker.isHidden = false
+            projectLabelPicker.isUserInteractionEnabled = true
+            
             projectLabelPicker.becomeFirstResponder()
         }
         else
         {
+            projectLabelPicker.isHidden = true
+            projectLabelPicker.isUserInteractionEnabled = false
+            
             let projectType = projectTypeArray[projectLabelPicker.selectedRow(inComponent: 0)]
             NotificationCenter.default.post(name: Notification.Name(rawValue: "selectedProjectType"), object: projectType)
             
