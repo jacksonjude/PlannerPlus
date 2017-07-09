@@ -27,7 +27,7 @@ class DatePickerViewController: UIViewController
     
     @objc func togglePicker(notification: Notification)
     {
-        if (notification.object as? Int) == kDueDate
+        if ((notification.object as! NSArray)[0] as! Int) == kDueDate
         {
             projectDueDatePicker.isHidden = false
             projectDueDatePicker.isUserInteractionEnabled = true

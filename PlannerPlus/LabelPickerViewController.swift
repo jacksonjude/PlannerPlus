@@ -52,14 +52,28 @@ class LabelPickerViewController: UIViewController, UIPickerViewDelegate, UIPicke
     
     @objc func togglePicker(notification: Notification)
     {
-        if (notification.object as? Int) == kLabels
+        if ((notification.object as! NSArray)[0] as! Int) == kLabels
         {
             projectLabelPicker.isHidden = false
             projectLabelPicker.isUserInteractionEnabled = true
             
             projectLabelPicker.becomeFirstResponder()
             
-            //projectLabelPicker.selectRow(projectLabelPicker[], inComponent: <#T##Int#>, animated: <#T##Bool#>)
+            if (notification.object as! NSArray)[1] is String
+            {
+                if let projectTypeIndex = projectTypeArray.index(of: (notification.object as! NSArray)[1] as! String)
+                {
+                    projectLabelPicker.selectRow(projectTypeIndex, inComponent: 0, animated: true)
+                }
+            }
+            
+            if (notification.object as! NSArray)[2] is String
+            {
+                if let projectSubjectIndex = projectSubjectArray.index(of: (notification.object as! NSArray)[2] as! String)
+                {
+                    projectLabelPicker.selectRow(projectSubjectIndex, inComponent: 1, animated: true)
+                }
+            }
         }
         else
         {

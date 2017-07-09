@@ -74,7 +74,7 @@ class DetailViewController: UIViewController {
         if editing
         {
             projectInfo.isEditable = true
-            NotificationCenter.default.post(name: Notification.Name(rawValue: "togglePicker"), object: pickerToShow)
+            NotificationCenter.default.post(name: Notification.Name(rawValue: "togglePicker"), object: [pickerToShow, detailItem?.projectType as Any, detailItem?.projectSubject as Any])
             
             pickerButton.isHidden = false
             pickerButton.isEnabled = true
@@ -83,7 +83,7 @@ class DetailViewController: UIViewController {
         {
             projectInfo.isEditable = false
             detailItem!.projectInfo = projectInfo.text
-            NotificationCenter.default.post(name: Notification.Name(rawValue: "togglePicker"), object: kNone)
+            NotificationCenter.default.post(name: Notification.Name(rawValue: "togglePicker"), object: [kNone])
             
             pickerButton.isHidden = true
             pickerButton.isEnabled = false
@@ -120,13 +120,13 @@ class DetailViewController: UIViewController {
         {
             pickerToShow = kDueDate
             pickerButton.setTitle("Due Date", for: .normal)
-            NotificationCenter.default.post(name: Notification.Name(rawValue: "togglePicker"), object: pickerToShow)
+            NotificationCenter.default.post(name: Notification.Name(rawValue: "togglePicker"), object: [pickerToShow, detailItem?.projectType as Any, detailItem?.projectSubject as Any])
         }
         else if pickerToShow == kDueDate
         {
             pickerToShow = kLabels
             pickerButton.setTitle("Labels", for: .normal)
-            NotificationCenter.default.post(name: Notification.Name(rawValue: "togglePicker"), object: pickerToShow)
+            NotificationCenter.default.post(name: Notification.Name(rawValue: "togglePicker"), object: [pickerToShow, detailItem?.projectType as Any, detailItem?.projectSubject as Any])
         }
     }
 

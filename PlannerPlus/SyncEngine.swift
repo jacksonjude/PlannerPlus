@@ -151,28 +151,20 @@ class SyncEngine: NSObject
     }
     
     //NOT WORKING: Use pull to refresh
-    /*func setupRemoteSubscriptions()
+    func setupRemoteSubscriptions()
     {
         let privateDatabase = CKContainer.default().privateCloudDatabase as CKDatabase
-        let predicate = NSPredicate(format: "TRUEPREDICATE")
         
-        let projectSubscription = CKQuerySubscription(recordType: "Project",
-                                                 predicate: predicate,
-                                                 options: [.firesOnRecordCreation, .firesOnRecordUpdate, .firesOnRecordDeletion])
+        let projectSubscription = CKRecordZoneSubscription(zoneID: CKRecordZone(zoneName: "Project").zoneID)
+        
         let projectNotificationInfo = CKNotificationInfo()
         projectNotificationInfo.shouldBadge = false
         projectSubscription.notificationInfo = projectNotificationInfo
-        privateDatabase.save(projectSubscription, completionHandler: { ( subscription, error) -> Void in
-            if error != nil
-            {
-                print("An error occured in saving subscription: \(String(describing: error))")
-            }
-            else
-            {
-                print("Saved Subscription Succesfully")                
-            }
-        })        
-    }*/
+        
+        let operation = CKModifySubscriptionsOperation(subscriptionsToSave: [projectSubscription], subscriptionIDsToDelete: nil)
+        
+        privateDatabase.add(operation)
+    }
     
     func fetchChangesFromCloud()
     {
@@ -241,15 +233,19 @@ class SyncEngine: NSObject
     {
         super.init()
         
+        setupRemoteSubscriptions()
+        
         if (UIApplication.shared.delegate as! AppDelegate).firstLaunch
         {
-            //setupRemoteSubscriptions()
-            UserDefaults.standard.set(false, forKey: "currentChangeToken")
+            
         }
         else
         {
-            let changeToken = NSKeyedUnarchiver.unarchiveObject(with: UserDefaults.standard.object(forKey: "currentChangeToken") as! Data) as! CKServerChangeToken
-            currentChangeToken = changeToken
+            if let changeToken = UserDefaults.standard.object(forKey: "currentChangeToken")
+            {
+                currentChangeToken = NSKeyedUnarchiver.unarchiveObject(with: changeToken as! Data) as? CKServerChangeToken
+                
+            }
         }
     }
 }

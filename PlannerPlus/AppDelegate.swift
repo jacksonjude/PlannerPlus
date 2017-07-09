@@ -28,9 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         let controller = masterNavigationController.topViewController as! MasterViewController
         controller.managedObjectContext = self.persistentContainer.viewContext
         
-        /*let notificationSettings = UIUserNotificationSettings(types: UIUserNotificationType.alert, categories: nil)
-        application.registerUserNotificationSettings(notificationSettings)
-        application.registerForRemoteNotifications()*/
+        application.registerForRemoteNotifications()
         
         if UserDefaults.standard.object(forKey: "firstLaunch") != nil
         {
