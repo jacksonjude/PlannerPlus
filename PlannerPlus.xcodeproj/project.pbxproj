@@ -83,11 +83,11 @@
 				7A54E3231F0F5BDF003C67AA /* LabelPickerViewController.swift */,
 				7A93EBC31F10478100D6A38A /* DatePickerViewController.swift */,
 				7A54E3211F0F4956003C67AA /* ProjectTypeTableViewController.swift */,
+				7AB8B1BA1F0D8B5B0070257E /* SyncEngine.swift */,
 				7A3434991F0C3E300029857A /* Main.storyboard */,
 				7A34349C1F0C3E300029857A /* Assets.xcassets */,
 				7A34349E1F0C3E300029857A /* LaunchScreen.storyboard */,
 				7A3434A11F0C3E300029857A /* Info.plist */,
-				7AB8B1BA1F0D8B5B0070257E /* SyncEngine.swift */,
 			);
 			path = PlannerPlus;
 			sourceTree = "<group>";
@@ -144,6 +144,9 @@
 						CreatedOnToolsVersion = 9.0;
 						LastSwiftMigration = 0900;
 						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
 							com.apple.Push = {
 								enabled = 1;
 							};

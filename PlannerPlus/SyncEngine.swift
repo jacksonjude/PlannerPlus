@@ -29,7 +29,7 @@ class SyncEngine: NSObject
             switch queuedChangeForObject.value
             {
             case .delete:
-                break //Should never call, already in queue to delete object
+            break //Should never call, already in queue to delete object
             case .insert:
                 if changeType == .delete
                 {
@@ -151,18 +151,26 @@ class SyncEngine: NSObject
         return fetchResults
     }
     
-    //NOT WORKING: Use pull to refresh
+    //Very forking picky about how it receives notifications... Wouldn't work unless should badge is set to true
     func setupRemoteSubscriptions()
     {
         let privateDatabase = CKContainer.default().privateCloudDatabase as CKDatabase
         
-        let projectSubscription = CKRecordZoneSubscription(zoneID: CKRecordZone(zoneName: "Project").zoneID)
+        let projectSubscription = CKQuerySubscription(recordType: "Project", predicate: NSPredicate(value: true), options: [.firesOnRecordCreation, .firesOnRecordUpdate, .firesOnRecordDeletion])
         
         let projectNotificationInfo = CKNotificationInfo()
-        projectNotificationInfo.shouldBadge = false
+        projectNotificationInfo.shouldBadge = true
+        projectNotificationInfo.alertBody = ""
         projectSubscription.notificationInfo = projectNotificationInfo
         
         let operation = CKModifySubscriptionsOperation(subscriptionsToSave: [projectSubscription], subscriptionIDsToDelete: nil)
+        
+        operation.modifySubscriptionsCompletionBlock = { (subscriptions, str, error) in
+            if error != nil
+            {
+                print("Error: \(error.debugDescription)")
+            }
+        }
         
         privateDatabase.add(operation)
     }

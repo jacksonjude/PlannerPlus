@@ -258,7 +258,7 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
                 tableView.moveRow(at: indexPath!, to: newIndexPath!)
         }
         
-        if (UIApplication.shared.delegate as! AppDelegate).syncEngine!.isReceivingFromServer
+        if !(UIApplication.shared.delegate as! AppDelegate).syncEngine!.isReceivingFromServer
         {
             (UIApplication.shared.delegate as! AppDelegate).syncEngine!.syncData()
         }
