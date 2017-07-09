@@ -235,11 +235,11 @@ class SyncEngine: NSObject
         }
         
         fetchRecordChangesOperation.completionBlock = { () in
-            self.isReceivingFromServer = false
-            
-            print("↓ - Finished Fetching Changes from Cloud")
-            
             OperationQueue.main.addOperation {
+                self.isReceivingFromServer = false
+                
+                print("↓ - Finished Fetching Changes from Cloud")
+                
                 NotificationCenter.default.post(name: Notification.Name(rawValue: "finishedFetchingFromCloud"), object: nil)
             }
         }

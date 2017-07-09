@@ -14,8 +14,6 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     var detailViewController: DetailViewController? = nil
     var managedObjectContext: NSManagedObjectContext? = nil
     
-    var waitingToFetchFromCloud = false
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -126,17 +124,11 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        waitingToFetchFromCloud = true
-        (UIApplication.shared.delegate as! AppDelegate).syncEngine?.fetchChangesFromCloud()
+        presentDetailView()
     }
     
     @objc func finishedFetchingFromCloud()
     {
-        if waitingToFetchFromCloud
-        {
-            presentDetailView()
-        }
-        
         if refreshControl != nil
         {
             if refreshControl!.isRefreshing
@@ -148,7 +140,6 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
     
     func presentDetailView()
     {
-        waitingToFetchFromCloud = false
         self.performSegue(withIdentifier: "showDetail", sender: self)
     }
     

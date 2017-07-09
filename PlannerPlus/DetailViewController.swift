@@ -22,8 +22,10 @@ class DetailViewController: UIViewController {
     let kDueDate = 2
     
     var pickerToShow = 1
+    
+    var detailIsEditing = false
 
-    func configureView() {
+    @objc func configureView() {
         // Update the user interface for the detail item.
         if let detail = detailItem {
             if let textView = projectInfo, detail.projectInfo != nil
@@ -61,6 +63,7 @@ class DetailViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(setProjectType), name: Notification.Name(rawValue: "selectedProjectType"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(setProjectSubject), name: Notification.Name(rawValue: "selectedProjectSubject"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(setProjectDueDate), name: Notification.Name(rawValue: "selectedDueDate"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(fetchedNewCloudUpdates), name: Notification.Name(rawValue: "finishedFetchingFromCloud"), object: nil)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -78,6 +81,8 @@ class DetailViewController: UIViewController {
             
             pickerButton.isHidden = false
             pickerButton.isEnabled = true
+            
+            detailIsEditing = true
         }
         else
         {
@@ -89,6 +94,8 @@ class DetailViewController: UIViewController {
             pickerButton.isEnabled = false
             
             (UIApplication.shared.delegate as! AppDelegate).syncEngine!.addToLocalChanges(withUUID: detailItem!.uuid!, withChangeType: .update)
+            
+            detailIsEditing = false
         }
     }
     
@@ -129,6 +136,14 @@ class DetailViewController: UIViewController {
             pickerToShow = kLabels
             pickerButton.setTitle("Labels", for: .normal)
             NotificationCenter.default.post(name: Notification.Name(rawValue: "togglePicker"), object: [pickerToShow, detailItem?.projectType as Any, detailItem?.projectSubject as Any])
+        }
+    }
+    
+    @objc func fetchedNewCloudUpdates()
+    {
+        if !detailIsEditing
+        {
+            configureView()
         }
     }
 
