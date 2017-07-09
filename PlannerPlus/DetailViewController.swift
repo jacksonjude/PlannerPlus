@@ -87,6 +87,8 @@ class DetailViewController: UIViewController {
             
             pickerButton.isHidden = true
             pickerButton.isEnabled = false
+            
+            (UIApplication.shared.delegate as! AppDelegate).syncEngine!.addToLocalChanges(withUUID: detailItem!.uuid!, withChangeType: .update)
         }
     }
     

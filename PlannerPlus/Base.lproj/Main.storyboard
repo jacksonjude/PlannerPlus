@@ -39,7 +39,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="eJv-Qb-PF1">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" keyboardDismissMode="interactive" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="eJv-Qb-PF1">
                                 <rect key="frame" x="67" y="160" width="240" height="128"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -47,7 +47,7 @@
                                     <constraint firstAttribute="height" constant="128" id="xkZ-tZ-Bzh"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences" returnKeyType="done"/>
                             </textView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="N/A" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3iX-VV-gnQ">
                                 <rect key="frame" x="202" y="72" width="105" height="40"/>
@@ -320,6 +320,10 @@
         <scene sceneID="h1H-MC-Lke">
             <objects>
                 <viewController id="vFR-ry-iCm" customClass="LabelPickerViewController" customModule="PlannerPlus" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="I55-XY-5Ya"/>
+                        <viewControllerLayoutGuide type="bottom" id="uTh-gW-oPs"/>
+                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="ysv-4p-w5A">
                         <rect key="frame" x="0.0" y="0.0" width="343" height="184"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

@@ -56,14 +56,17 @@ class SyncEngine: NSObject
     
     func syncData()
     {
-        print("Syncing Data to remote...")
         let privateDatabase = CKContainer.default().privateCloudDatabase
+        
+        print("↑ - Syncing Data to Cloud")
         
         for change in queuedChanges
         {
             switch change.value
             {
             case .insert:
+                print(" ↑ - Inserting: \(change.key)")
+                
                 let remoteID = CKRecordID(recordName: change.key, zoneID: projectZone.zoneID)
                 
                 let remoteRecord = CKRecord(recordType: "Project", recordID: remoteID)
@@ -84,6 +87,7 @@ class SyncEngine: NSObject
                     })
                 }
             case .delete:
+                print(" ↑ - Deleting: \(change.key)")
                 privateDatabase.delete(withRecordID: CKRecordID(recordName: change.key, zoneID: projectZone.zoneID), completionHandler: { (recordID, error) -> Void in
                     if error != nil
                     {
@@ -95,6 +99,7 @@ class SyncEngine: NSObject
                     }
                 })
             case .update:
+                print(" ↑ - Updating: \(change.key)")
                 var updatePredicate = NSPredicate(format: "recordName == %@", change.key)
                 let query = CKQuery(recordType: "Project", predicate: updatePredicate)
                 privateDatabase.perform(query, inZoneWith: projectZone.zoneID, completionHandler:
@@ -122,7 +127,7 @@ class SyncEngine: NSObject
             }
         }
         
-        
+        print("↑ - Finished Syncing Data to Cloud")
     }
     
     func fetchLocalObjects(withPredicate predicate: NSPredicate) -> [AnyObject]?
@@ -141,10 +146,6 @@ class SyncEngine: NSObject
             NSLog("An Error Occored:", error!)
         } catch {
             fatalError()
-        }
-        if error == nil
-        {
-            print("Fetched Objects To Update From CoreData...")
         }
         
         return fetchResults
@@ -168,6 +169,8 @@ class SyncEngine: NSObject
     
     func fetchChangesFromCloud()
     {
+        print("↓ - Fetching Changes from Cloud")
+        
         isReceivingFromServer = true
         
         let zoneChangeoptions = CKFetchRecordZoneChangesOptions()
@@ -181,11 +184,15 @@ class SyncEngine: NSObject
             if let recordToUpdate = self.fetchLocalObjects(withPredicate: updateLocalObjectPredicate)?.first as? Project
             {
                 recordToUpdate.updateFromRemote(record)
+                
+                print(" ↓ - Updating: \(recordToUpdate.uuid!)")
             }
             else
             {
                 let newProject = Project(context: self.managedObjectContext)
                 newProject.updateFromRemote(record)
+                
+                print(" ↓ - Inserting: \(newProject.uuid ?? "N/A")")
             }
             
             OperationQueue.main.addOperation {
@@ -198,6 +205,8 @@ class SyncEngine: NSObject
             let recordToDelete = self.fetchLocalObjects(withPredicate: deleteLocalObjectPredicate)?.first
             if recordToDelete != nil
             {
+                print(" ↓ - Deleting: \(recordToDelete!.uuid! ?? "N/A")")
+                
                 OperationQueue.main.addOperation {
                     self.managedObjectContext.delete(recordToDelete as! NSManagedObject)
                     (UIApplication.shared.delegate as! AppDelegate).saveContext()
@@ -219,6 +228,8 @@ class SyncEngine: NSObject
         
         fetchRecordChangesOperation.completionBlock = { () in
             self.isReceivingFromServer = false
+            
+            print("↓ - Finished Fetching Changes from Cloud")
             
             OperationQueue.main.addOperation {
                 NotificationCenter.default.post(name: Notification.Name(rawValue: "finishedFetchingFromCloud"), object: nil)

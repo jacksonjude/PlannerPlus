@@ -56,12 +56,15 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
                 textField.text = "Project"
             }
             
+            let newProjectUUID = UUID().uuidString
+            (UIApplication.shared.delegate as! AppDelegate).syncEngine!.addToLocalChanges(withUUID: newProjectUUID, withChangeType: .insert)
+            
             let context = self.fetchedResultsController.managedObjectContext
             let newProject = Project(context: context)
             
             // If appropriate, configure the new managed object.
             newProject.createdAt = Date()
-            newProject.uuid = UUID().uuidString
+            newProject.uuid = newProjectUUID
             newProject.name = textField.text
             newProject.projectSubject = "N/A"
             newProject.projectType = "N/A"
@@ -171,6 +174,8 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
 
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
+            (UIApplication.shared.delegate as! AppDelegate).syncEngine!.addToLocalChanges(withUUID: fetchedResultsController.object(at: indexPath).uuid!, withChangeType: .delete)
+            
             let context = fetchedResultsController.managedObjectContext
             context.delete(fetchedResultsController.object(at: indexPath))
                 
@@ -253,9 +258,8 @@ class MasterViewController: UITableViewController, NSFetchedResultsControllerDel
                 tableView.moveRow(at: indexPath!, to: newIndexPath!)
         }
         
-        if !(UIApplication.shared.delegate as! AppDelegate).syncEngine!.isReceivingFromServer
+        if (UIApplication.shared.delegate as! AppDelegate).syncEngine!.isReceivingFromServer
         {
-            (UIApplication.shared.delegate as! AppDelegate).syncEngine!.addToLocalChanges(withUUID: (anObject as! Project).uuid!, withChangeType: type)
             (UIApplication.shared.delegate as! AppDelegate).syncEngine!.syncData()
         }
     }
