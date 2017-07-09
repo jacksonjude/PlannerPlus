@@ -8,10 +8,9 @@
 
 import UIKit
 import CoreData
-import UserNotifications
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDelegate, UNUserNotificationCenterDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDelegate {
 
     var window: UIWindow?
     var syncEngine : SyncEngine?
@@ -29,16 +28,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         let controller = masterNavigationController.topViewController as! MasterViewController
         controller.managedObjectContext = self.persistentContainer.viewContext
         
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge]) { (granted, error) in
-            if error == nil
-            {
-                print("Granted notifications!")
-            }
-            else
-            {
-                print("Error: \(error!.localizedDescription)")
-            }
-        }
         application.registerForRemoteNotifications()
         
         if UserDefaults.standard.object(forKey: "firstLaunch") != nil
