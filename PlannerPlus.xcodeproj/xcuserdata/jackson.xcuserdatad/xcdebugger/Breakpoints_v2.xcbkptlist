@@ -27,13 +27,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "PlannerPlus/AppDelegate.swift"
-            timestampString = "521326533.526927"
+            filePath = "PlannerPlus/MasterViewController.swift"
+            timestampString = "521358424.058407"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "156"
-            endingLineNumber = "156"
-            landmarkName = "application(_:didReceiveRemoteNotification:fetchCompletionHandler:)"
+            startingLineNumber = "93"
+            endingLineNumber = "93"
+            landmarkName = "prepare(for:sender:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

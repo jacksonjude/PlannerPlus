@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CloudKit
 
 class DetailViewController: UIViewController {
 
@@ -14,14 +15,11 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var projectInfo: UITextView!
     @IBOutlet weak var projectSubjectLabel: UILabel!
     @IBOutlet weak var projectTypeLabel: UILabel!
-    @IBOutlet weak var pickerButton: UIButton!
     @IBOutlet weak var projectDueDateLabel: UILabel!
-    
+        
     let kNone = 0
-    let kLabels = 1
-    let kDueDate = 2
-    
-    var pickerToShow = 1
+    let kShow = 1
+    let kHide = 2
     
     var detailIsEditing = false
 
@@ -67,8 +65,11 @@ class DetailViewController: UIViewController {
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        (UIApplication.shared.delegate as! AppDelegate).syncEngine?.addToLocalChanges(withUUID: detailItem!.uuid!, withChangeType: .update)
-        (UIApplication.shared.delegate as! AppDelegate).saveContext()
+        if detailItem != nil
+        {
+            (UIApplication.shared.delegate as! AppDelegate).syncEngine?.addToLocalChanges(withUUID: detailItem!.uuid!, withChangeType: .update)
+            (UIApplication.shared.delegate as! AppDelegate).saveContext()
+        }
     }
     
     override func setEditing(_ editing: Bool, animated: Bool) {
@@ -77,10 +78,9 @@ class DetailViewController: UIViewController {
         if editing
         {
             projectInfo.isEditable = true
-            NotificationCenter.default.post(name: Notification.Name(rawValue: "togglePicker"), object: [pickerToShow, detailItem?.projectType as Any, detailItem?.projectSubject as Any])
+            NotificationCenter.default.post(name: Notification.Name(rawValue: "togglePicker"), object: [kShow, detailItem?.projectType as Any, detailItem?.projectSubject as Any])
             
-            pickerButton.isHidden = false
-            pickerButton.isEnabled = true
+            //projectNavigationItem.leftBarButtonItem = UIBarButtonItem(title: "Share", style: .plain, target: self, action: #selector(shareRecordButtonPressed))
             
             detailIsEditing = true
         }
@@ -88,10 +88,9 @@ class DetailViewController: UIViewController {
         {
             projectInfo.isEditable = false
             detailItem!.projectInfo = projectInfo.text
-            NotificationCenter.default.post(name: Notification.Name(rawValue: "togglePicker"), object: [kNone])
+            NotificationCenter.default.post(name: Notification.Name(rawValue: "togglePicker"), object: [kHide])
             
-            pickerButton.isHidden = true
-            pickerButton.isEnabled = false
+            projectNavigationItem.leftBarButtonItem = projectNavigationItem.backBarButtonItem
             
             (UIApplication.shared.delegate as! AppDelegate).syncEngine!.addToLocalChanges(withUUID: detailItem!.uuid!, withChangeType: .update)
             
@@ -125,18 +124,20 @@ class DetailViewController: UIViewController {
     
     @IBAction func togglePickerToShow()
     {
-        if pickerToShow == kLabels
+        /*if pickerToShow == kLabels
         {
             pickerToShow = kDueDate
             pickerButton.setTitle("Due Date", for: .normal)
             NotificationCenter.default.post(name: Notification.Name(rawValue: "togglePicker"), object: [pickerToShow, detailItem?.projectType as Any, detailItem?.projectSubject as Any])
+            self.view.sendSubview(toBack: self.view.viewWithTag(617)!)
         }
         else if pickerToShow == kDueDate
         {
             pickerToShow = kLabels
             pickerButton.setTitle("Labels", for: .normal)
             NotificationCenter.default.post(name: Notification.Name(rawValue: "togglePicker"), object: [pickerToShow, detailItem?.projectType as Any, detailItem?.projectSubject as Any])
-        }
+            self.view.sendSubview(toBack: self.view.viewWithTag(616)!)
+        }*/
     }
     
     @objc func fetchedNewCloudUpdates()
@@ -145,6 +146,47 @@ class DetailViewController: UIViewController {
         {
             configureView()
         }
+    }
+    
+    @objc func shareRecordButtonPressed()
+    {
+        let projectZone = CKRecordZone(zoneName: "ProjectZone")
+        let privateDatabase = CKContainer.default().privateCloudDatabase as CKDatabase
+        
+        let sharePredicate = NSPredicate(format: "recordName == %@", detailItem!.uuid!)
+        let query = CKQuery(recordType: "Project", predicate: sharePredicate)
+        privateDatabase.perform(query, inZoneWith: projectZone.zoneID, completionHandler:
+            { (results, error) -> Void in
+                if results != nil
+                {
+                    
+                    let controller = UICloudSharingController {(controller, prepareCompletionHandler) in
+                        
+                        let share = CKShare(rootRecord: results!.first!)
+                        
+                        share[CKShareTitleKey] = results!.first!.object(forKey: "projectName")
+                        share.publicPermission = .none
+                        
+                        let modifyRecordsOperation = CKModifyRecordsOperation(
+                            recordsToSave: [results!.first!, share],
+                            recordIDsToDelete: nil)
+                        
+                        modifyRecordsOperation.modifyRecordsCompletionBlock = {
+                            records, recordIDs, error in
+                            if error != nil {
+                                print(error!.localizedDescription)
+                            }
+                            prepareCompletionHandler(share,
+                                                     CKContainer.default(), error)
+                        }
+                        privateDatabase.add(modifyRecordsOperation)
+                    }
+                    
+                    controller.popoverPresentationController?.barButtonItem = self.projectNavigationItem.leftBarButtonItem
+                    
+                    self.present(controller, animated: true)
+                }
+        })
     }
 
     override func didReceiveMemoryWarning() {

@@ -8,10 +8,10 @@
 
 import UIKit
 import CoreData
-import UserNotifications
+import CloudKit
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDelegate, UNUserNotificationCenterDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDelegate {
 
     var window: UIWindow?
     var syncEngine : SyncEngine?
@@ -29,7 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
         let controller = masterNavigationController.topViewController as! MasterViewController
         controller.managedObjectContext = self.persistentContainer.viewContext
         
-        UNUserNotificationCenter.current().requestAuthorization(options: [.badge]) { (granted, error) in
+        /*UNUserNotificationCenter.current().requestAuthorization(options: [.badge]) { (granted, error) in
             if error == nil
             {
                 print("Granted notifications!")
@@ -38,7 +38,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
             {
                 print("Error: \(error!.localizedDescription)")
             }
-        }
+        }*/
         application.registerForRemoteNotifications()
         
         if UserDefaults.standard.object(forKey: "firstLaunch") != nil
@@ -145,6 +145,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         print("Registered for remote Apple Push Notifications")
+        deviceToken
     }
     
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
@@ -154,6 +155,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         print("Received Remote Update!!")
         self.syncEngine?.fetchChangesFromCloud()
+    }
+    
+    func application(_ application: UIApplication, userDidAcceptCloudKitShareWith cloudKitShareMetadata: CKShareMetadata) {
+        
+        let acceptSharesOperation =
+            CKAcceptSharesOperation(shareMetadatas: [cloudKitShareMetadata])
+        acceptSharesOperation.perShareCompletionBlock = {
+            metadata, share, error in
+            if error != nil {
+                print(error!.localizedDescription)
+            } else {
+                //Fetch share
+            }
+        }
+        
+        CKContainer(identifier:
+            cloudKitShareMetadata.containerIdentifier).add(
+                acceptSharesOperation)
     }
 }
 

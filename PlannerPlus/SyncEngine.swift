@@ -168,7 +168,18 @@ class SyncEngine: NSObject
         operation.modifySubscriptionsCompletionBlock = { (subscriptions, str, error) in
             if error != nil
             {
-                print("Error: \(error.debugDescription)")
+                if error.debugDescription.contains("duplicate")
+                {
+                    print("Already added subscription")
+                }
+                else
+                {
+                    print("Error: \(error.debugDescription)")
+                }
+            }
+            else
+            {
+                print("Added remote subscriptions")
             }
         }
         

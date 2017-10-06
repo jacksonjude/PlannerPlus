@@ -19,8 +19,8 @@ class LabelPickerViewController: UIViewController, UIPickerViewDelegate, UIPicke
     var pickerIsShown = false
     
     let kNone = 0
-    let kLabels = 1
-    let kDueDate = 2
+    let kShow = 1
+    let kHide = 2
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,7 +52,7 @@ class LabelPickerViewController: UIViewController, UIPickerViewDelegate, UIPicke
     
     @objc func togglePicker(notification: Notification)
     {
-        if ((notification.object as! NSArray)[0] as! Int) == kLabels
+        if ((notification.object as! NSArray)[0] as! Int) == kShow
         {
             projectLabelPicker.isHidden = false
             projectLabelPicker.isUserInteractionEnabled = true
